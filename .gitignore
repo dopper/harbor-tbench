@@ -144,6 +144,9 @@ ignore/
 /harbor/
 /pi-mono*/
 
+# Local reports
+gitleaks-report.json
+
 # Keep example tasks
 !examples/tasks/
 !src/harbor/tasks/

@@ -1,9 +1,8 @@
-[extend]
-  # Keep defaults; no custom rules yet.
+title = "harbor-tbench-runs gitleaks config"
 
 [allowlist]
-  description = "Repository allowlist"
-  files = [
+  description = "Ignore git internals and generated reports"
+  paths = [
     "\\.git/",
     "gitleaks-report\\.json"
   ]
