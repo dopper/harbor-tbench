@@ -1,0 +1,9 @@
+[extend]
+  # Keep defaults; no custom rules yet.
+
+[allowlist]
+  description = "Repository allowlist"
+  files = [
+    "\\.git/",
+    "gitleaks-report\\.json"
+  ]

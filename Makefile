@@ -8,7 +8,7 @@ VENV := .venv
 PIP := $(VENV)/bin/pip
 HARBOR := $(VENV)/bin/harbor
 
-.PHONY: help venv install clean
+.PHONY: help venv install secrets-scan clean
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
@@ -20,6 +20,9 @@ venv: ## Create local virtualenv at .venv (defaults to python3.12 if available)
 install: venv ## Install/upgrade pip and install Harbor into .venv
 	$(PIP) install --upgrade pip
 	$(PIP) install harbor
+
+secrets-scan: ## Run gitleaks scan via Docker (writes gitleaks-report.json)
+	docker run --rm -v $(PWD):/repo zricethezav/gitleaks:latest detect --source=/repo --report-path=/repo/gitleaks-report.json
 
 clean: ## Remove the virtualenv
 	rm -rf $(VENV)

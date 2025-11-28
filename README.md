@@ -40,6 +40,10 @@ What this agent does:
 2) If it needs install steps, add `install_<new_agent>.sh.j2` and reference it via `_install_agent_template_path`.
 3) Run Harbor with `--agent-import-path custom_agents.<new_agent>:ClassName` and any `--agent-kwarg key=value`.
 
+## Secret scanning
+- One-off scan (Docker required): `make secrets-scan`  
+  Generates `gitleaks-report.json` in repo root.
+
 Tips:
 - Keep `custom_agents/` importable (run from repo root or set `PYTHONPATH=$(pwd)`).
 - Drop a prebuilt `pi-bundle.tgz` into `custom_agents/` to accelerate pi installs.
