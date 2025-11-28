@@ -1,0 +1,219 @@
+#!/bin/bash
+# Installation script template for Pi-Mono Coding Agent
+# This Jinja2 template is rendered and executed during agent setup
+
+set -e  # Exit on error
+
+echo "Installing Pi-Mono Coding Agent..."
+
+# Create necessary directories
+mkdir -p /logs/agent
+mkdir -p /workspace
+mkdir -p ~/.pi/agent
+
+# Install system dependencies
+echo "Installing system dependencies..."
+apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential \
+    || true  # Don't fail if some packages are already installed
+
+# Fast path: use prebuilt bundle if provided
+if [ -f /tmp/pi-bundle.tgz ]; then
+    echo "Found prebuilt pi bundle at /tmp/pi-bundle.tgz; extracting..."
+    tar -xzf /tmp/pi-bundle.tgz -C /
+    if command -v pi &> /dev/null; then
+        echo "Pi-coding-agent restored from bundle."
+    else
+        echo "Bundle extraction did not yield 'pi' in PATH; falling back to npm install."
+    fi
+fi
+
+# Ensure Node.js is installed (required for pi-coding-agent)
+if ! command -v pi &> /dev/null; then
+    echo "Checking Node.js installation..."
+    if ! command -v node &> /dev/null; then
+        echo "Installing Node.js..."
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+        apt-get install -y nodejs
+    fi
+
+    # Verify Node.js version (needs >= 20.0.0)
+    NODE_VERSION=$(node --version | sed 's/v//' | cut -d. -f1)
+    if [ "$NODE_VERSION" -lt 20 ]; then
+        echo "ERROR: Node.js version 20 or higher is required"
+        echo "Current version: $(node --version)"
+        exit 1
+    fi
+
+    echo "Node.js version: $(node --version)"
+    echo "npm version: $(npm --version)"
+
+    # Install pi-coding-agent globally
+    echo "Installing @mariozechner/pi-coding-agent..."
+    npm install -g @mariozechner/pi-coding-agent
+fi
+
+# Verify installation
+if command -v pi &> /dev/null; then
+    echo "Pi-coding-agent installed successfully!"
+    pi --help 2>/dev/null | head -20 || echo "Help command not available"
+else
+    echo "WARNING: 'pi' command not found in PATH"
+    # Try to find where npm installed it
+    echo "Checking npm global bin directory..."
+    NPM_BIN=$(npm bin -g)
+    if [ -f "$NPM_BIN/pi" ]; then
+        echo "Found pi at $NPM_BIN/pi"
+        # Create symlink
+        ln -sf "$NPM_BIN/pi" /usr/local/bin/pi
+        echo "Created symlink to /usr/local/bin/pi"
+    else
+        echo "ERROR: Could not find pi executable"
+        exit 1
+    fi
+fi
+
+# Configure default settings if parameters are provided
+
+echo "Configuring pi-coding-agent settings..."
+cat > ~/.pi/agent/settings.json << 'EOF'
+{
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.1-codex",
+  "autoSave": true
+}
+EOF
+echo "Settings configured:"
+cat ~/.pi/agent/settings.json
+
+
+# Create custom models configuration for local/custom endpoints if needed
+echo "Setting up custom models configuration..."
+cat > ~/.pi/agent/models.json << 'EOF'
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://localhost:11434/v1",
+      "apiKey": "OLLAMA_API_KEY",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "gpt-oss:120b-cloud",
+          "name": "GPT-OSS 120B (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 128000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "qwen3-vl:235b-instruct-cloud",
+          "name": "Qwen3-VL 235B Instruct (Cloud)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 256000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "qwen3-coder:480b-cloud",
+          "name": "Qwen3-Coder 480B (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 32768,
+          "maxTokens": 8192
+        },
+        {
+          "id": "glm-4.6:cloud",
+          "name": "GLM-4.6 (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 128000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "deepseek-v3.1:671b-cloud",
+          "name": "DeepSeek V3.1 671B (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 128000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "minimax-m2:cloud",
+          "name": "MiniMax M2 (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 128000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "kimi-k2:1t-cloud",
+          "name": "Kimi K2 1T (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 256000,
+          "maxTokens": 8192
+        },
+        {
+          "id": "kimi-k2-thinking:cloud",
+          "name": "Kimi K2 Thinking (Cloud)",
+          "reasoning": true,
+          "input": ["text"],
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0},
+          "contextWindow": 256000,
+          "maxTokens": 8192
+        }
+      ]
+    },
+    "custom": {
+      "baseUrl": "${CUSTOM_API_URL:-http://localhost:8000/v1}",
+      "apiKey": "CUSTOM_API_KEY",
+      "api": "openai-completions",
+      "models": []
+    }
+  }
+}
+EOF
+
+# Create a test script to verify the agent works
+echo "Creating test script..."
+cat > /tmp/test_pi.sh << 'TESTSCRIPT'
+#!/bin/bash
+echo "Testing pi-coding-agent installation..."
+
+# Test with a simple command (non-interactive)
+echo "Test 1: Version check"
+pi --help | head -5
+
+echo ""
+echo "Test 2: Simple task (will fail if no API key set)"
+# This will fail without API keys but shows the command works
+timeout 5 pi --mode text --no-session "What is 2+2?" 2>&1 | head -20 || true
+
+echo ""
+echo "Pi-coding-agent test complete"
+TESTSCRIPT
+
+chmod +x /tmp/test_pi.sh
+
+echo "Running installation test..."
+/tmp/test_pi.sh
+
+# Clean up test script
+rm -f /tmp/test_pi.sh
+
+echo "Pi-Mono Coding Agent installation completed"
+echo "Note: You must set appropriate API keys for your chosen provider:"
+echo "  - ANTHROPIC_API_KEY or ANTHROPIC_OAUTH_TOKEN for Anthropic"
+echo "  - OPENAI_API_KEY for OpenAI"
+echo "  - GEMINI_API_KEY for Google"
+echo "  - GROQ_API_KEY for Groq"
+echo "  - And others (see documentation)"

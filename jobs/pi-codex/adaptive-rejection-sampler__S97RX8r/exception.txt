@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/trial/trial.py", line 341, in run
+    await self._setup_agent()
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/trial/trial.py", line 208, in _setup_agent
+    await asyncio.wait_for(
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/custom_agents/pi_mono_agent.py", line 154, in setup
+    await super().setup(environment)
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/agents/installed/base.py", line 100, in setup
+    result = await environment.exec(command="bash /installed-agent/install.sh")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker.py", line 261, in exec
+    return await self._run_docker_compose_command(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker.py", line 144, in _run_docker_compose_command
+    stdout_bytes, stderr_bytes = await process.communicate()
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/subprocess.py", line 201, in communicate
+    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/subprocess.py", line 181, in _read_stream
+    output = await stream.read()
+             ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py", line 706, in read
+    block = await self.read(self._limit)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py", line 713, in read
+    await self._wait_for_data('read')
+  File "/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py", line 545, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError

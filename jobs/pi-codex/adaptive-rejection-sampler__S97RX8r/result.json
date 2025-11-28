@@ -1,0 +1,74 @@
+{
+    "id": "691c5daa-a448-43b0-8636-bfa197b0f13c",
+    "task_name": "adaptive-rejection-sampler",
+    "trial_name": "adaptive-rejection-sampler__S97RX8r",
+    "trial_uri": "file:///Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/jobs/pi-codex/adaptive-rejection-sampler__S97RX8r",
+    "task_id": {
+        "git_url": "https://github.com/laude-institute/terminal-bench-2.git",
+        "git_commit_id": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+        "path": "adaptive-rejection-sampler"
+    },
+    "source": "terminal-bench",
+    "task_checksum": "4fde6e809c475b000ae3ea4135f906ffe4775bccae7dafd0b123f4ecc9fcf697",
+    "config": {
+        "task": {
+            "path": "adaptive-rejection-sampler",
+            "git_url": "https://github.com/laude-institute/terminal-bench-2.git",
+            "git_commit_id": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "terminal-bench"
+        },
+        "trial_name": "adaptive-rejection-sampler__S97RX8r",
+        "trials_dir": "jobs/pi-codex",
+        "timeout_multiplier": 1.0,
+        "agent": {
+            "name": null,
+            "import_path": "custom_agents:PiMonoAgent",
+            "model_name": "openai/gpt-5.1-codex",
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {}
+        },
+        "environment": {
+            "type": "docker",
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "job_id": "d5a058fa-75e1-4cf0-aa03-0d5263342742"
+    },
+    "agent_info": {
+        "name": "pi-mono",
+        "version": "1.0.0",
+        "model_info": null
+    },
+    "agent_result": null,
+    "verifier_result": null,
+    "exception_info": {
+        "exception_type": "CancelledError",
+        "exception_message": "",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/trial/trial.py\", line 341, in run\n    await self._setup_agent()\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/trial/trial.py\", line 208, in _setup_agent\n    await asyncio.wait_for(\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/custom_agents/pi_mono_agent.py\", line 154, in setup\n    await super().setup(environment)\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/agents/installed/base.py\", line 100, in setup\n    result = await environment.exec(command=\"bash /installed-agent/install.sh\")\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker.py\", line 261, in exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/dopper/Developer/datarel/github/projects/harbor-tbench-runs/.venv/lib/python3.12/site-packages/harbor/environments/docker/docker.py\", line 144, in _run_docker_compose_command\n    stdout_bytes, stderr_bytes = await process.communicate()\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py\", line 706, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py\", line 713, in read\n    await self._wait_for_data('read')\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/streams.py\", line 545, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n",
+        "occurred_at": "2025-11-27T17:54:21.191409"
+    },
+    "started_at": "2025-11-27T17:54:19.291154",
+    "finished_at": "2025-11-27T17:54:22.543239",
+    "environment_setup": {
+        "started_at": "2025-11-27T17:54:19.291969",
+        "finished_at": "2025-11-27T17:54:19.607190"
+    },
+    "agent_setup": {
+        "started_at": "2025-11-27T17:54:19.607245",
+        "finished_at": "2025-11-27T17:54:21.188320"
+    },
+    "agent_execution": null,
+    "verifier": null
+}
