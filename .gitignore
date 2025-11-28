@@ -1,0 +1,158 @@
+# ========================
+# Python
+# ========================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pixi/
+# nested venvs inside subprojects
+**/venv/
+**/.venv/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# Linting
+.ruff_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========================
+# Node.js / TypeScript
+# ========================
+
+**/node_modules/
+*.tsbuildinfo
+**/packages/*/dist/
+**/packages/*/dist-chrome/
+**/packages/*/dist-firefox/
+
+# Package managers
+.npm/
+.pnpm-store/
+.yarn/
+yarn-error.log
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# ========================
+# IDEs and Editors
+# ========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ========================
+# OS Files
+# ========================
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ========================
+# Logs
+# ========================
+
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tui-debug.log
+
+# ========================
+# Project Specific
+# ========================
+
+# Harbor benchmark runs
+jobs/
+trials/
+tasks/
+datasets/
+tmp/
+ignore/
+/harbor/
+/pi-mono*/
+
+# Keep example tasks
+!examples/tasks/
+!src/harbor/tasks/
+
+# Workspace files
+*.code-workspace
+
+# Local config
+.pi_config/
+.envrc
