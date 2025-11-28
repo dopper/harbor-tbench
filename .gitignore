@@ -157,3 +157,4 @@ gitleaks-report.json
 # Local config
 .pi_config/
 .envrc
+AGENTS.md
