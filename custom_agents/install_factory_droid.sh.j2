@@ -1,0 +1,149 @@
+#!/bin/bash
+# Installation script template for Factory Droid Agent
+# This Jinja2 template is rendered and executed during agent setup
+
+set -e  # Exit on error
+
+echo "Installing Factory Droid CLI..."
+
+# Create necessary directories
+mkdir -p /logs/agent
+mkdir -p /workspace
+mkdir -p ~/.factory
+
+# Install dependencies
+echo "Installing system dependencies..."
+
+# Install expect for handling interactive CLI
+apt-get update && apt-get install -y \
+    expect \
+    curl \
+    xdg-utils \
+    || true  # Don't fail if some packages are already installed
+
+# Install Factory Droid CLI using the official installation script
+echo "Downloading and installing Factory Droid..."
+
+# Use the official installation command
+curl -fsSL https://app.factory.ai/cli | sh
+
+# Verify installation
+if command -v droid &> /dev/null; then
+    echo "Factory Droid installed successfully!"
+    droid --version 2>/dev/null || echo "Version command not available"
+else
+    echo "WARNING: droid command not found in PATH"
+    # Try to find where it was installed
+    find /usr/local -name "droid" -type f 2>/dev/null || true
+    find /opt -name "droid" -type f 2>/dev/null || true
+    find ~ -name "droid" -type f 2>/dev/null || true
+fi
+
+# Fix PATH issue by creating symlink if droid is in ~/.local/bin
+if [ -f /root/.local/bin/droid ] && [ ! -f /usr/local/bin/droid ]; then
+    echo "Creating symlink to make droid available in PATH..."
+    ln -sf /root/.local/bin/droid /usr/local/bin/droid
+    echo "Symlink created: /usr/local/bin/droid -> /root/.local/bin/droid"
+
+    # Verify symlink works
+    if command -v droid &> /dev/null; then
+        echo "Droid is now available in PATH"
+        droid --version 2>/dev/null || echo "Version: $(droid --version 2>&1 | head -1)"
+    else
+        echo "ERROR: Symlink created but droid still not in PATH"
+    fi
+elif [ -f /root/.local/bin/droid ]; then
+    echo "Droid symlink already exists at /usr/local/bin/droid"
+fi
+
+# Create default settings file if model preference is set
+{% if droid_model %}
+echo "Configuring default Factory Droid settings..."
+cat > ~/.factory/settings.json << 'EOF'
+{
+  "model": "{{ droid_model | default('sonnet') }}",
+  "reasoning_effort": "{{ reasoning_effort | default('medium') }}",
+  "auto_commit": false,
+  "auto_push": false
+}
+EOF
+echo "Settings configured with model: {{ droid_model | default('sonnet') }}"
+{% endif %}
+
+# Create a wrapper script to handle non-interactive execution
+echo "Creating non-interactive wrapper script..."
+cat > /usr/local/bin/droid-wrapper << 'WRAPPER_EOF'
+#!/bin/bash
+# Wrapper script for non-interactive Factory Droid execution
+
+# Function to run droid with timeout and capture output
+run_droid() {
+    local input_file="$1"
+    local output_file="$2"
+    local timeout_sec="${3:-1800}"  # Default 30 minutes
+
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file $input_file not found"
+        return 1
+    fi
+
+    echo "Running Factory Droid with input from $input_file"
+    echo "Timeout set to $timeout_sec seconds"
+
+    # Use timeout command to prevent hanging
+    timeout "$timeout_sec" droid < "$input_file" 2>&1 | tee "$output_file"
+
+    local exit_code=$?
+    if [ $exit_code -eq 124 ]; then
+        echo "Factory Droid execution timed out after $timeout_sec seconds"
+    elif [ $exit_code -ne 0 ]; then
+        echo "Factory Droid exited with code $exit_code"
+    else
+        echo "Factory Droid completed successfully"
+    fi
+
+    return $exit_code
+}
+
+# Main execution
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <input_file> <output_file> [timeout_seconds]"
+    exit 1
+fi
+
+run_droid "$1" "$2" "${3:-1800}"
+WRAPPER_EOF
+
+chmod +x /usr/local/bin/droid-wrapper
+
+# Test wrapper script exists
+if [ -f /usr/local/bin/droid-wrapper ]; then
+    echo "Wrapper script created successfully"
+else
+    echo "ERROR: Failed to create wrapper script"
+    exit 1
+fi
+
+# Install Python expect module for better interactive control (optional)
+pip install pexpect || true
+
+# Create a test input file to verify everything works
+cat > /tmp/test_droid_input.txt << 'EOF'
+/help
+exit
+EOF
+
+echo "Testing Factory Droid installation..."
+if timeout 10 droid < /tmp/test_droid_input.txt > /tmp/test_droid_output.txt 2>&1; then
+    echo "Factory Droid test successful!"
+    cat /tmp/test_droid_output.txt | head -20
+else
+    echo "WARNING: Factory Droid test failed or timed out"
+    echo "This might be normal if authentication is required"
+fi
+
+# Clean up test files
+rm -f /tmp/test_droid_input.txt /tmp/test_droid_output.txt
+
+echo "Factory Droid installation completed"
+echo "Note: First run may require authentication via browser"

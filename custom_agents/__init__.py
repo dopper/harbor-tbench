@@ -9,4 +9,9 @@ and `harbor run --agent-import-path custom_agents:PiMonoAgent` fails with
 
 from .pi_mono_agent import PiMonoAgent
 
-__all__ = ["PiMonoAgent"]
+try:
+    from .factory_droid import FactoryDroidAgent  # type: ignore
+except ImportError:
+    FactoryDroidAgent = None
+
+__all__ = ["PiMonoAgent", "FactoryDroidAgent"]
